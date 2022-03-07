@@ -1,10 +1,13 @@
 const sapsModel = require("../models/sapsModel")
 
 module.exports = {
+
+
     getAll:async function (req,res,next){
         try{
             const documents = await sapsModel.find()
             res.json(documents)
+            res.send(documents)
             console.log("Documentos",documents)
         }catch(e){
             console.log(e)
@@ -30,7 +33,7 @@ module.exports = {
                     Status_usuario:req.body.Status_usuario,
                     Pto_tbjo_resp: req.body.Pto_tbjo_resp,
                     Trabajo_real: req.body.Trabajo_real,
-                    Operacion: req.bodyOperación
+                    Operacion: req.body.Operacion
                    
             })
             const document = await sap.save()
