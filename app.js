@@ -1,5 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
+var bodyParser = require('body-parser');
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -10,6 +12,10 @@ var usersRouter = require('./routes/users');
 var sapRouter =require('./routes/sap'); //SAP
 
 var app = express();
+
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

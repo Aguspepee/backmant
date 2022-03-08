@@ -10,7 +10,8 @@ const sapsShema = mongoose.Schema({
   },
   Equipo:{
     type:String,
-    required:[true, errorMessage.GENERAL.campo_obligatorio],
+    default:"",
+    
   },
   Ubicac_técnica: {
     type:String,
@@ -30,7 +31,7 @@ const sapsShema = mongoose.Schema({
   },
   Grupo_planif: {
     type:String,
-    required:[true, errorMessage.GENERAL.campo_obligatorio],
+    default:"",
   },
   Clase_de_orden: {
     type:String,
@@ -49,7 +50,7 @@ const sapsShema = mongoose.Schema({
     required:[true, errorMessage.GENERAL.campo_obligatorio],
   },
   Trabajo_real: {
-    type:Number,
+    type:String,
     required:[true, errorMessage.GENERAL.campo_obligatorio],
   },
   Operacion: {
