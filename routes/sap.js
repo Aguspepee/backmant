@@ -12,6 +12,6 @@ router.post('/',sapController.createAll)
 
 //----RUTAS PARTICULARES----//
 //Obtener matriz con las rutas entre las fechas 
-router.get('/filterGeneral/:Month-:Year-:EndDate-:Cl_actividad_PM-:Clase_de_orden-:Grupo_planif-:Texto_breve-:Pto_tbjo_resp-:Operacion',sapController.filterGeneral)
+router.get('/filterGeneral/:Month-:Year-:Cl_actividad_PM-:Clase_de_orden-:Grupo_planif-:Texto_breve-:Pto_tbjo_resp-:Operacion',sapController.filterGeneral)
 
 module.exports = router;

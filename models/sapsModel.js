@@ -57,6 +57,31 @@ const sapsShema = mongoose.Schema({
     type:String,
     required:[true, errorMessage.GENERAL.campo_obligatorio],
   },
+  Fecha_ref_Mes:{
+    type:String,
+    default: function(){
+      return this.Fecha_ref.slice(3,5)
+    },
+  },
+  Fecha_ref_Año:{
+    type:String,
+    default: function(){
+      return this.Fecha_ref.slice(6,10)
+    },
+  },
+  Inicio_program_Mes:{
+    type:String,
+    default: function(){
+      return this.Fecha_ref.slice(3,5)
+    },
+  },
+  Inicio_program_Año:{
+    type:String,
+    default: function(){
+      return this.Fecha_ref.slice(6,10)
+    },
+  },
+
 });
 
 module.exports = mongoose.model("saps", sapsShema)

@@ -32,6 +32,7 @@ module.exports = {
         Trabajo_real: req.body.Trabajo_real,
         Operacion: req.body.Operacion,
       });
+
       const document = await sapsModel.create(req.body);
       console.log("se creo", document);
       res.json(document);
@@ -59,33 +60,58 @@ module.exports = {
       let Year = req.params.Year;
       let Cl_actividad_PM = req.params.Cl_actividad_PM;
       let Clase_de_orden = req.params.Clase_de_orden;
+      if (Clase_de_orden === "false") { Clase_de_orden = "" };
       let Grupo_planif = req.params.Grupo_planif;
       let Texto_breve = req.params.Texto_breve;
-      if(Texto_breve==="false"){ Texto_breve=""};
+      if (Texto_breve === "false") { Texto_breve = "" };
       let Pto_tbjo_resp = req.params.Pto_tbjo_resp.replace(" ", "-");
       let Operacion = req.params.Operacion;
-      console.log("Month: ", Month);
-      console.log("Year: ", Year);
-      console.log("Cl_actividad_PM: ", Cl_actividad_PM);
-      console.log("Clase_de_orden: ", Clase_de_orden);
-      console.log("Grupo_planif: ", Grupo_planif);
-      console.log("Texto_breve: ", Texto_breve);
-      console.log("Pto_tbjo_resp: ", Pto_tbjo_resp);
-      console.log("Operacion: ", Operacion);
-      const documents = await sapsModel.aggregate([
+
+      const filter2 = {
+        $group:
+        {
+          _id: ["$Ubicac_técnica", "$Status_usuario"],
+          Status_usuario: { $first: "$Status_usuario" }
+        }
+      }
+
+      //Set documents by Status_usuario 
+      const Acumulado_mensual = await sapsModel.aggregate([
+        //Stage 0 - Filter by Date
+        {
+          $match: {
+            $and: [
+              { "Inicio_program_Mes": { "$eq": Month } },
+              { "Inicio_program_Año": { "$eq": Year } }
+            ]
+          }
+        },
+
+        //Stage 1 - Filters
         {
           $match: {
             $and: [
               { "Grupo_planif": { "$eq": Grupo_planif } },
-              { "Clase_de_orden": { "$eq": Clase_de_orden } },
+              { "Clase_de_orden": { "$regex": Clase_de_orden, "$options": "i" } },
               { "Cl_actividad_PM": { "$eq": Cl_actividad_PM } },
               { "Texto_breve": { "$regex": Texto_breve, "$options": "i" } }
             ],
           },
         },
+        //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
+        //Si hay ubicaciones técnicas con diferentes Status, no las borra. VER SI DEBE SER ASI. 
+        filter2,
+        //Stage 3 - Make Groups of Status
         { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
       ]);
-      res.json(documents);
+      res.json({
+        "Grupo_planif": Grupo_planif,
+        "Clase_de_orden": Clase_de_orden,
+        "Cl_actividad_PM": Cl_actividad_PM,
+        "Texto_breve": Texto_breve,
+        "Acumulado_anual": Acumulado_mensual,
+        "Acumulado_mensual": Acumulado_mensual
+      });
     } catch (e) {
       console.log(e);
       e.status = 400;
