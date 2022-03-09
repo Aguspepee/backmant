@@ -148,7 +148,9 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
+        { $group: { _id: "$Status_usuario",Status:{$first:"$Status_usuario"}, Count: { $sum: 1 } } },
+        { $project : { _id : 0, Status : 1 , Count : 1 } }
+
       ]);
 
       const Inicio_Programado_Anual = await sapsModel.aggregate([
@@ -159,7 +161,8 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
+        { $group: { _id: "$Status_usuario",Status:{$first:"$Status_usuario"}, Count: { $sum: 1 } } },
+        { $project : { _id : 0, Status : 1 , Count : 1 } }
       ]);
 
       const Fecha_Referencia_Mensual = await sapsModel.aggregate([
@@ -170,7 +173,8 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
+        { $group: { _id: "$Status_usuario",Status:{$first:"$Status_usuario"}, Count: { $sum: 1 } } },
+        { $project : { _id : 0, Status : 1 , Count : 1 } }
       ]);
 
       const Fecha_Referencia_Anual = await sapsModel.aggregate([
@@ -181,7 +185,8 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
+        { $group: { _id: "$Status_usuario",Status:{$first:"$Status_usuario"}, Count: { $sum: 1 } } },
+        { $project : { _id : 0, Status : 1 , Count : 1 } }
       ]);
 
       //RESPUESTA
