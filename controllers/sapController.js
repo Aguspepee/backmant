@@ -56,61 +56,145 @@ module.exports = {
 
   filterGeneral: async function (req, res, next) {
     try {
+      //Se definen los parámetros para los filtros
       let Month = req.params.Month;
       let Year = req.params.Year;
       let Cl_actividad_PM = req.params.Cl_actividad_PM;
       let Clase_de_orden = req.params.Clase_de_orden;
-      if (Clase_de_orden === "false") { Clase_de_orden = "" };
+      if (Clase_de_orden === "false") {
+        Clase_de_orden = "";
+      }
       let Grupo_planif = req.params.Grupo_planif;
       let Texto_breve = req.params.Texto_breve;
-      if (Texto_breve === "false") { Texto_breve = "" };
-      let Pto_tbjo_resp = req.params.Pto_tbjo_resp.replace(" ", "-");
+      if (Texto_breve === "false") {
+        Texto_breve = "";
+      }
+      let Pto_tbjo_resp = req.params.Pto_tbjo_resp;
+      if (Pto_tbjo_resp === "false") {
+        Pto_tbjo_resp = "";
+      }
       let Operacion = req.params.Operacion;
+      let BorrarDuplicados = req.params.BorrarDuplicados;
 
-      const filter2 = {
-        $group:
-        {
-          _id: ["$Ubicac_técnica", "$Status_usuario"],
-          Status_usuario: { $first: "$Status_usuario" }
-        }
+      //-------FILTROS--------//
+      //FILTRO Mensual Inicio Pogramado
+      let FiltroMensualInicioProgramado = {
+        $match: {
+          $and: [
+            { Inicio_program_Mes: { $eq: Month } },
+            { Inicio_program_Año: { $eq: Year } },
+          ],
+        },
+      };
+
+      //FILTRO Anual Inicio Pogramado
+      let FiltroAnualInicioProgramado = {
+        $match: {
+          $and: [{ Inicio_program_Año: { $eq: Year } }],
+        },
+      };
+
+      //FILTRO Mensual Fecha Referencia
+      let FiltroMensualFechaReferencia = {
+        $match: {
+          $and: [
+            { Fecha_ref_Mes: { $eq: Month } },
+            { Fecha_ref_Año: { $eq: Year } },
+          ],
+        },
+      };
+
+      //FILTRO Anual Fecha Referencia
+      let FiltroAnualFechaReferencia = {
+        $match: {
+          $and: [{ Fecha_ref_Año: { $eq: Year } }],
+        },
+      };
+
+      //FILTRO Borrar Duplicados
+      //Si hay ubicaciones técnicas con diferentes Status, no las borra.
+      let FiltroBorrarDuplicados;
+      if (BorrarDuplicados === "true") {
+        FiltroBorrarDuplicados = {
+          $group: {
+            _id: ["$Ubicac_técnica", "$Status_usuario"],
+            Status_usuario: { $first: "$Status_usuario" },
+          },
+        };
+      } else {
+        FiltroBorrarDuplicados = { $match: {} };
       }
 
-      //Set documents by Status_usuario 
-      const Acumulado_mensual = await sapsModel.aggregate([
-        //Stage 0 - Filter by Date
-        {
-          $match: {
-            $and: [
-              { "Inicio_program_Mes": { "$eq": Month } },
-              { "Inicio_program_Año": { "$eq": Year } }
-            ]
-          }
+      //FILTRO Filtros generales
+      let FiltroFiltrosGenerales = {
+        $match: {
+          $and: [
+            { Grupo_planif: { $eq: Grupo_planif } },
+            { Clase_de_orden: { $regex: Clase_de_orden, $options: "i" } },
+            { Pto_tbjo_resp: { $regex: Pto_tbjo_resp, $options: "i" } },
+            { Cl_actividad_PM: { $eq: Cl_actividad_PM } },
+            { Texto_breve: { $regex: Texto_breve, $options: "i" } },
+            { Operacion: { $eq: Operacion } },
+          ],
         },
+      };
 
+      //Set documents by Status_usuario
+      const Inicio_Programado_Mensual = await sapsModel.aggregate([
+        //Stage 0 - Filter by Date
+        FiltroMensualInicioProgramado,
         //Stage 1 - Filters
-        {
-          $match: {
-            $and: [
-              { "Grupo_planif": { "$eq": Grupo_planif } },
-              { "Clase_de_orden": { "$regex": Clase_de_orden, "$options": "i" } },
-              { "Cl_actividad_PM": { "$eq": Cl_actividad_PM } },
-              { "Texto_breve": { "$regex": Texto_breve, "$options": "i" } }
-            ],
-          },
-        },
+        FiltroFiltrosGenerales,
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
-        //Si hay ubicaciones técnicas con diferentes Status, no las borra. VER SI DEBE SER ASI. 
-        filter2,
+        FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
         { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
       ]);
+
+      const Inicio_Programado_Anual = await sapsModel.aggregate([
+        //Stage 0 - Filter by Date
+        FiltroAnualInicioProgramado,
+        //Stage 1 - Filters
+        FiltroFiltrosGenerales,
+        //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
+        FiltroBorrarDuplicados,
+        //Stage 3 - Make Groups of Status
+        { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
+      ]);
+
+      const Fecha_Referencia_Mensual = await sapsModel.aggregate([
+        //Stage 0 - Filter by Date
+        FiltroMensualInicioProgramado,
+        //Stage 1 - Filters
+        FiltroFiltrosGenerales,
+        //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
+        FiltroBorrarDuplicados,
+        //Stage 3 - Make Groups of Status
+        { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
+      ]);
+
+      const Fecha_Referencia_Anual = await sapsModel.aggregate([
+        //Stage 0 - Filter by Date
+        FiltroAnualInicioProgramado,
+        //Stage 1 - Filters
+        FiltroFiltrosGenerales,
+        //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
+        FiltroBorrarDuplicados,
+        //Stage 3 - Make Groups of Status
+        { $group: { _id: "$Status_usuario", count: { $sum: 1 } } },
+      ]);
+
+      //RESPUESTA
       res.json({
-        "Grupo_planif": Grupo_planif,
-        "Clase_de_orden": Clase_de_orden,
-        "Cl_actividad_PM": Cl_actividad_PM,
-        "Texto_breve": Texto_breve,
-        "Acumulado_anual": Acumulado_mensual,
-        "Acumulado_mensual": Acumulado_mensual
+        Grupo_planif: Grupo_planif,
+        Clase_de_orden: Clase_de_orden,
+        Cl_actividad_PM: Cl_actividad_PM,
+        Pto_tbjo_resp: Pto_tbjo_resp,
+        Texto_breve: Texto_breve,
+        Inicio_Programado_Mensual: Inicio_Programado_Mensual,
+        Inicio_Programado_Anual: Inicio_Programado_Anual,
+        Fecha_Referencia_Mensual: Inicio_Programado_Mensual,
+        Fecha_Referencia_Anual: Inicio_Programado_Anual,
       });
     } catch (e) {
       console.log(e);
