@@ -1,5 +1,6 @@
 const mongoose = require("../bin/server");
 const errorMessage = require("../utils/errorMessage")
+const grupos = require("../utils/equivalencias")
 
 //Schema
 const sapsShema = mongoose.Schema({
@@ -50,8 +51,8 @@ const sapsShema = mongoose.Schema({
     required:[true, errorMessage.GENERAL.campo_obligatorio],
   },
   Trabajo_real: {
-    type:String,
-    required:[true, errorMessage.GENERAL.campo_obligatorio],
+    type:Number,
+    default:0,
   },
   Operacion: {
     type:String,
@@ -82,6 +83,25 @@ const sapsShema = mongoose.Schema({
     },
   },
 
+  Grupo_Agrupamiento:{
+    type:String,
+   // default: "AGRUPAAA"
+     default: (function(){
+      let Agrupaciones = grupos.GRUPOS
+      
+      let lista = Agrupaciones.filter((Agrupaciones)=>{
+        
+        return(Agrupaciones.Actividad === this.Cl_actividad_PM )})
+        //console.log(lista[0].Grupo )
+        if (lista[0]){
+          lista=lista[0].Grupo
+        }else{
+          lista="NAN"
+        }
+       // console.log(grupo)
+      return (lista) 
+    })
+  }
 });
 
 module.exports = mongoose.model("saps", sapsShema)

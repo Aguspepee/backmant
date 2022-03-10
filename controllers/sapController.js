@@ -228,4 +228,59 @@ module.exports = {
       next(e);
     }
   },
+
+
+  distribucionHoraria: async function (req, res, next) {
+    try {
+      //Se definen los parámetros para los filtros
+      let Month = req.params.Month;
+      let Year = req.params.Year;
+      let Grupo_planif = req.params.Grupo_planif;
+      let Pto_tbjo_resp = req.params.Pto_tbjo_resp;
+      if (Pto_tbjo_resp === "false") {
+        Pto_tbjo_resp = "";
+      }
+
+      //-------FILTROS--------//
+      //FILTRO Mensual Fecha Referencia
+      let FiltroMensualFechaReferencia = {
+        $match: {
+          $and: [
+            { Fecha_ref_Mes: { $eq: Month } },
+            { Fecha_ref_Año: { $eq: Year } },
+          ],
+        },
+      };
+
+      //FILTRO Filtros generales
+      let FiltroFiltrosGenerales = {
+        $match: {
+          $and: [
+           { Grupo_planif: { $eq: Grupo_planif } }
+          ],
+        },
+      };
+
+      //Set documents by Status_usuario
+      const Distribucion = await sapsModel.aggregate([
+        //Stage 0 - Filter by Date
+        FiltroMensualFechaReferencia,
+        //Stage 1 - Filters
+        FiltroFiltrosGenerales,
+        //Stage 3 - Make Groups of Status
+        { $group: { _id: "$Grupo_Agrupamiento",Grupo_Agrupamiento: { $first: "$Grupo_Agrupamiento" } ,Count: { $sum:"$Trabajo_real"} }  },
+        { $project: { _id: 0, Grupo_Agrupamiento: 1, Count: 1 } }
+
+      ]);
+      console.log(Month,Year,Grupo_planif,Pto_tbjo_resp)
+      //RESPUESTA
+      res.json({
+        Distribucion
+      });
+    } catch (e) {
+      console.log(e);
+      e.status = 400;
+      next(e);
+    }
+  },
 };

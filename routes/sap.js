@@ -14,4 +14,9 @@ router.post('/',sapController.createAll)
 //Obtener matriz con las rutas entre las fechas 
 router.get('/filterGeneral/:Month-:Year-:Cl_actividad_PM-:Clase_de_orden-:Grupo_planif-:Texto_breve-:Pto_tbjo_resp-:Operacion-:BorrarDuplicados',sapController.filterGeneral)
 
+//Obrener distribución de horas 
+router.get('/DistibucionHoraria/:Month-:Year-:Grupo_planif',sapController.distribucionHoraria)
+
+
+
 module.exports = router;
