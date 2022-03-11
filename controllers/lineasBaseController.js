@@ -1,10 +1,10 @@
-const sapsModel = require("../models/sapsModel");
+const lineasBaseModel = require("../models/lineasBaseModel");
 const mongoose = require("../bin/server");
 
 module.exports = {
   getAll: async function (req, res, next) {
     try {
-      const documents = await sapsModel.find();
+      const documents = await lineasBaseModel.find();
       res.json(documents);
       res.send(documents);
       console.log("Documentos", documents);
@@ -17,23 +17,56 @@ module.exports = {
 
   createAll: async function (req, res, next) {
     try {
-      const sap = new sapsModel({
-        Orden: req.body.Orden,
-        Equipo: req.body.Equipo,
-        Ubicac_técnica: req.body.Ubicac_técnica,
-        Texto_breve: req.body.Texto_breve,
-        Inicio_program: req.body.Inicio_program,
-        Fecha_ref: req.body.Fecha_ref,
-        Grupo_planif: req.body.Grupo_planif,
-        Clase_de_orden: req.body.Clase_de_orden,
-        Cl_actividad_PM: req.body.Cl_actividad_PM,
-        Status_usuario: req.body.Status_usuario,
-        Pto_tbjo_resp: req.body.Pto_tbjo_resp,
-        Trabajo_real: req.body.Trabajo_real,
-        Operacion: req.body.Operacion,
+      const sap = new lineasBaseModel({
+        Codigo:req.body.Codigo,
+        Codigo_Tension:req.body.Codigo_Tension,
+        TENS_kV:req.body.TENS_kV,
+        DENOMINACION_LAT:req.body.DENOMINACION_LAT,
+        Notas:req.body.Notas,
+        Long_Oficial_km:req.body.Long_Oficial_km,
+        Long_Planim_Km:req.body.Long_Planim_Km,
+        Long_Dif_Km:req.body.Long_Dif_Km,
+        Año_P_Serv:req.body.Año_P_Serv,
+        S_mm2:req.body.S_mm2,
+        HG_mm2:req.body.HG_mm2,
+        Material_Conductor:req.body.Material_Conductor,
+        Tipo_de_Estructura:req.body.Tipo_de_Estructura,
+        Compartida_km:req.body.Compartida_km,
+        Torres_Cantidad:req.body.Torres_Cantidad,
+        Suspension_Cantidad:req.body.Suspension_Cantidad,
+        Aisladores_Suspension_Cantidad:req.body.Aisladores_Suspension_Cantidad,
+        Suspension_Masa:req.body.Suspension_Masa,
+        Retension_Cantidad:req.body.Retension_Cantidad,
+        Aisladores_Retension_Cantidad:req.body.Aisladores_Retension_Cantidad,
+        Retension_Masa:req.body.Retension_Masa,
+        Altura_Cond:req.body.Altura_Cond,
+        Ta:req.body.Ta,
+        Zona:req.body.Zona,
+        Servidumbre_Urbana:req.body.Servidumbre_Urbana,
+        Servidumbre_Rural:req.body.Servidumbre_Rural,
+        Sale:req.body.Sale,
+        Llega:req.body.Llega,
+        BDE:req.body.BDE,
+        IDQ:req.body.IDQ,
+        Observaciones:req.body.Observaciones,
+        Resistencia_Terreno:req.body.Resistencia_Terreno,
+        Pot_Nat:req.body.Pot_Nat,
+        Imped_Caract:req.body.Imped_Caract,
+        Const_Atenuac:req.body.Const_Atenuac,
+        Const_Fase:req.body.Const_Fase,
+        Vel_Prop:req.body.Vel_Prop,
+        R:req.body.R,
+        X:req.body.X,
+        B:req.body.B,
+        R0:req.body.R0,
+        X0:req.body.X0,
+        B0:req.body.B0,
+        Limite_termico:req.body.Limite_termico,
+        Propietario:req.body.Propietario,
+        Show:req.body.Show,
       });
 
-      const document = await sapsModel.create(req.body);
+      const document = await lineasBaseModel.create(req.body);
       console.log("se creo", document);
       res.json(document);
     } catch (e) {
@@ -46,7 +79,7 @@ module.exports = {
   deleteAll: async function (req, res, next) {
     try {
       console.log(req.params, req.body);
-      const update = await sapsModel.remove({});
+      const update = await lineasBaseModel.remove({});
       res.json(req.params.id);
     } catch (e) {
       e.status = 400;
@@ -144,7 +177,7 @@ module.exports = {
       };
 
       //Set documents by Status_usuario
-      const Inicio_Programado_Mensual = await sapsModel.aggregate([
+      const Inicio_Programado_Mensual = await lineasBaseModel.aggregate([
         //Stage 0 - Filter by Date
         FiltroMensualInicioProgramado,
         //Stage 1 - Filters
@@ -157,7 +190,7 @@ module.exports = {
 
       ]);
 
-      const Inicio_Programado_Anual = await sapsModel.aggregate([
+      const Inicio_Programado_Anual = await lineasBaseModel.aggregate([
         //Stage 0 - Filter by Date
         FiltroAnualInicioProgramado,
         //Stage 1 - Filters
@@ -169,7 +202,7 @@ module.exports = {
         { $project: { _id: 0, Status: 1, Count: 1 } }
       ]);
 
-      const Fecha_Referencia_Mensual = await sapsModel.aggregate([
+      const Fecha_Referencia_Mensual = await lineasBaseModel.aggregate([
         //Stage 0 - Filter by Date
         FiltroMensualFechaReferencia,
         //Stage 1 - Filters
@@ -181,7 +214,7 @@ module.exports = {
         { $project: { _id: 0, Status: 1, Count: 1 } }
       ]);
 
-      const Fecha_Referencia_Anual = await sapsModel.aggregate([
+      const Fecha_Referencia_Anual = await lineasBaseModel.aggregate([
         //Stage 0 - Filter by Date
         FiltroAnualFechaReferencia,
         //Stage 1 - Filters
@@ -193,7 +226,7 @@ module.exports = {
         { $project: { _id: 0, Status: 1, Count: 1 } }
       ]);
 
-      const Fecha_Referencia_Acumulado = await sapsModel.aggregate([
+      const Fecha_Referencia_Acumulado = await lineasBaseModel.aggregate([
         //Stage 0 - Filter by Date
         FiltroAnualFechaReferencia,
         //Stage 1 - Filters
@@ -221,60 +254,6 @@ module.exports = {
         Fecha_Referencia_Mensual: Fecha_Referencia_Mensual,
         Fecha_Referencia_Anual: Fecha_Referencia_Anual,
         Fecha_Referencia_Acumulado: Fecha_Referencia_Acumulado,
-      });
-    } catch (e) {
-      console.log(e);
-      e.status = 400;
-      next(e);
-    }
-  },
-
-
-  distribucionHoraria: async function (req, res, next) {
-    try {
-      //Se definen los parámetros para los filtros
-      let Month = req.params.Month;
-      let Year = req.params.Year;
-      let Grupo_planif = req.params.Grupo_planif;
-      let Pto_tbjo_resp = req.params.Pto_tbjo_resp;
-      if (Pto_tbjo_resp === "false") {
-        Pto_tbjo_resp = "";
-      }
-
-      //-------FILTROS--------//
-      //FILTRO Mensual Fecha Referencia
-      let FiltroMensualFechaReferencia = {
-        $match: {
-          $and: [
-            { Fecha_ref_Mes: { $eq: Month } },
-            { Fecha_ref_Año: { $eq: Year } },
-          ],
-        },
-      };
-
-      //FILTRO Filtros generales
-      let FiltroFiltrosGenerales = {
-        $match: {
-          $and: [
-           { Grupo_planif: { $eq: Grupo_planif } }
-          ],
-        },
-      };
-
-      //Set documents by Status_usuario
-      const Distribucion = await sapsModel.aggregate([
-        //Stage 0 - Filter by Date
-        FiltroMensualFechaReferencia,
-        //Stage 1 - Filters
-        FiltroFiltrosGenerales,
-        //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Grupo_Agrupamiento",Grupo_Agrupamiento: { $first: "$Grupo_Agrupamiento" } ,Count: { $sum:"$Trabajo_real"} }  },
-        { $project: { _id: 0, Grupo_Agrupamiento: 1, Count: 1 } }
-
-      ]);
-      //RESPUESTA
-      res.json({
-        Distribucion
       });
     } catch (e) {
       console.log(e);

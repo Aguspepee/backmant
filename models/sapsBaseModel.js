@@ -3,7 +3,7 @@ const errorMessage = require("../utils/errorMessage");
 const grupos = require("../utils/equivalencias");
 
 //Schema
-const sapsShema = mongoose.Schema({
+const sapsBaseShema = mongoose.Schema({
   Orden: {
     type: String,
     required: [true, errorMessage.GENERAL.campo_obligatorio],
@@ -100,4 +100,4 @@ const sapsShema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("saps", sapsShema);
+module.exports = mongoose.model("sap_bases", sapsBaseShema);
