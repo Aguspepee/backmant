@@ -91,9 +91,9 @@ const sapsShema = mongoose.Schema({
         return Agrupaciones.Actividad === this.Cl_actividad_PM;
       });
       if (lista[0]) {
-        lista = lista[0].Grupo;
+        lista = lista[0].NombreGrupo;
       } else {
-        lista = "NAN";
+        lista = "Otras Actividades";
       }
       return lista;
     },

@@ -73,7 +73,7 @@ module.exports={
     {
       Grupo: "RPM",
       NombreGrupo: "Mantenimiento Programado",
-      Actividad: "LMT",
+      Actividad: "LMI",
       NombreActividad: "LAT Inspección Minuciosa",
       Mostrar: true,
     },

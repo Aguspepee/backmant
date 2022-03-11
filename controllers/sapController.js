@@ -272,7 +272,6 @@ module.exports = {
         { $project: { _id: 0, Grupo_Agrupamiento: 1, Count: 1 } }
 
       ]);
-      console.log(Month,Year,Grupo_planif,Pto_tbjo_resp)
       //RESPUESTA
       res.json({
         Distribucion
