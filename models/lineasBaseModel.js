@@ -2,191 +2,198 @@ const mongoose = require("../bin/server");
 const errorMessage = require("../utils/errorMessage");
 
 //Schema
-const sapsShema = mongoose.Schema({
+const lineasBaseShema = mongoose.Schema({
   Codigo: {
     type: String,
-    default: "",
+    default: null,
   },
   Codigo_Tension:  {
     type: String,
-    default: "null",
+    default: null,
   },
   TENS_kV:  {
     type: Number,
-    default: 0,
+    default: null,
   },
   DENOMINACION_LAT:  {
     type: String,
-    default: "null",
+    default: null,
   },
   Notas:  {
     type: String,
-    default: "null",
+    default: null,
   },
   Long_Oficial_km:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Long_Planim_Km:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Long_Dif_Km:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Año_P_Serv:   {
     type: String,
-    default: "null",
+    default: null,
   },
   S_mm2:   {
     type: String,
-    default: "null",
+    default: null,
   },
   HG_mm2:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Material_Conductor:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Tipo_de_Estructura:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Compartida_km:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Torres_Cantidad:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Suspension_Cantidad:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Aisladores_Suspension_Cantidad:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Suspension_Masa:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Retension_Cantidad:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Aisladores_Retension_Cantidad:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Retension_Masa:   {
     type: Number,
-    default: 0,
+    default:null,
   },
   Altura_Cond:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Ta:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Zona:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Servidumbre_Urbana:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Servidumbre_Rural:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Sale:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Llega:  {
     type: String,
-    default: "null",
+    default: null,
   },
   BDE:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   IDQ:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Observaciones:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Resistencia_Terreno:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Pot_Nat:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Imped_Caract:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Const_Atenuac:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Const_Fase:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   Vel_Prop:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   R:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   X:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   B:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   R0:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   X0:   {
     type: Number,
-    default: 0,
+    default: null,
   },
   B0:  {
     type: Number,
-    default: 0,
+    default: null,
   },
   Limite_termico:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Propietario:   {
     type: String,
-    default: "null",
+    default: null,
   },
   Show:   {
     type: String,
     default: "true",
   },
+  Clave_Interna: {
+    type: String,
+    default: function () {
+
+      return this.Codigo.replace("-","");
+    },
+  }
 });
 
-module.exports = mongoose.model("sap_bases", sapsShema);
+module.exports = mongoose.model("lineas_bases", lineasBaseShema);

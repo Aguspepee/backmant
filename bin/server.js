@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 
 mongoose.connect(
-  "mongodb+srv://TranspaMantenimiento:TranspaMantenimiento123@mantenimiento.crcs7.mongodb.net/Mantenimiento?retryWrites=true&w=majority",
+  "mongodb+srv://TranspaMantenimiento:853kYmFKrFc0MKy9@mantenimiento.crcs7.mongodb.net/Mantenimiento?retryWrites=true&w=majority",
   {
     useNewUrlParser: true,
   }, function (error){

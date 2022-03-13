@@ -10,8 +10,8 @@ router.delete('/',lineasBaseController.deleteAll)
 //Carga TODOS los documentos a la base de datos de Lineas (lineasBase)
 router.post('/',lineasBaseController.createAll)
 
-//----RUTAS PARTICULARES----//
-//Obtener matriz con las rutas entre las fechas 
-router.get('/filterGeneral/:Month-:Year-:Cl_actividad_PM-:Clase_de_orden-:Grupo_planif-:Texto_breve-:Pto_tbjo_resp-:Operacion-:BorrarDuplicados',lineasBaseController.filterGeneral)
+//Obrener distribución de horas 
+router.get('/novedades/:Month-:Year-:Grupo_planif-:Tipo',lineasBaseController.Novedades)
+
 
 module.exports = router;
