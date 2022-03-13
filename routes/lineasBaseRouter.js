@@ -11,7 +11,7 @@ router.delete('/',lineasBaseController.deleteAll)
 router.post('/',lineasBaseController.createAll)
 
 //Obrener distribución de horas 
-router.get('/novedades/:Month-:Year-:Grupo_planif-:Tipo',lineasBaseController.Novedades)
-
+router.get('/novedadesResumen/:Month-:Year-:Grupo_planif-:Tipo',lineasBaseController.NovedadesResumen)
+router.get('/novedadesDetalle/:Month-:Year-:Grupo_planif-:Tipo',lineasBaseController.NovedadesDetalle)
 
 module.exports = router;
