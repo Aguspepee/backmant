@@ -86,8 +86,6 @@ module.exports = {
     }
   },
 
-
-
   NovedadesResumen: async function (req, res, next) {
     let Month = req.params.Month;
     let Year = req.params.Year;
@@ -97,215 +95,222 @@ module.exports = {
       //Set documents by Status_usuario
       const Lineas_Mensual = await lineasBaseModel.aggregate([
         {
-          '$match': {
-            'Zona': Grupo_planif
-          }
-        }, {
-          '$lookup': {
-            'from': 'lineas_novedades',
-            'localField': 'Clave_Interna',
-            'foreignField': 'Codigo_Interno',
-            'as': 'Historial'
-          }
-        }, {
-          '$project': {
-            '_id': 0,
-            'Codigo_Tension': 1,
-            'Codigo': 1,
-            'Clave_Interna': 1,
-            'Zona': 1,
-            'Torres_Cantidad': 1,
-            'Historial': {
-              '$filter': {
-                'input': '$Historial',
-                'as': 'hola',
-                'cond': {
-                  '$and': [
+          $match: {
+            Zona: Grupo_planif,
+          },
+        },
+        {
+          $lookup: {
+            from: "lineas_novedades",
+            localField: "Clave_Interna",
+            foreignField: "Codigo_Interno",
+            as: "Historial",
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            Codigo_Tension: 1,
+            Codigo: 1,
+            Clave_Interna: 1,
+            Zona: 1,
+            Torres_Cantidad: 1,
+            Historial: {
+              $filter: {
+                input: "$Historial",
+                as: "hola",
+                cond: {
+                  $and: [
                     {
-                      '$eq': [
-                        '$$hola.Fecha_Mes', Month
-                      ]
-                    }, {
-                      '$eq': [
-                        '$$hola.Fecha_Año', Year
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$Historial',
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$project': {
-            'Codigo_Completo': {
-              '$concat': [
-                '$Codigo_Tension', '$Clave_Interna'
-              ]
+                      $eq: ["$$hola.Fecha_Mes", Month],
+                    },
+                    {
+                      $eq: ["$$hola.Fecha_Año", Year],
+                    },
+                  ],
+                },
+              },
             },
-            'Zona': 1,
-            'Torres_Cantidad': 1,
-            'Codigo_valorac': '$Historial.Codigo_valorac',
-            'Inspeccionada': {
-              '$cond': [
+          },
+        },
+        {
+          $unwind: {
+            path: "$Historial",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            Codigo_Completo: {
+              $concat: ["$Codigo_Tension", "$Clave_Interna"],
+            },
+            Zona: 1,
+            Torres_Cantidad: 1,
+            Codigo_valorac: "$Historial.Codigo_valorac",
+            Inspeccionada: {
+              $cond: [
                 {
-                  '$eq': [
-                    '$Historial.Codigo_valorac', Tipo
-                  ]
-                }, 1, 0
-              ]
-            }
-          }
-        }, {
-          '$group': {
-            '_id': '$Codigo_Completo',
-            'Codigo_Completo': {
-              '$first': '$Codigo_Completo'
+                  $eq: ["$Historial.Codigo_valorac", Tipo],
+                },
+                1,
+                0,
+              ],
             },
-            'Torres_Cantidad': {
-              '$first': '$Torres_Cantidad'
+          },
+        },
+        {
+          $group: {
+            _id: "$Codigo_Completo",
+            Codigo_Completo: {
+              $first: "$Codigo_Completo",
             },
-            'Torres_Inspeccionadas': {
-              '$sum': '$Inspeccionada'
-            }
-          }
-        }, {
-          '$group': {
-            '_id': {},
-            'Torres_Cantidad': {
-              '$sum': '$Torres_Cantidad'
+            Torres_Cantidad: {
+              $first: "$Torres_Cantidad",
             },
-            'Torres_Inspeccionadas': {
-              '$sum': '$Torres_Inspeccionadas'
-            }
-          }
-        }, {
-          '$project': {
-            '_id': 0,
-            'Codigo_Completo': 1,
-            'Torres_Cantidad': 1,
-            'Torres_Inspeccionadas': 1
-          }
-        }, {
-          '$sort': {
-            'Codigo_Completo': 1
-          }
-        }
+            Torres_Inspeccionadas: {
+              $sum: "$Inspeccionada",
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {},
+            Torres_Cantidad: {
+              $sum: "$Torres_Cantidad",
+            },
+            Torres_Inspeccionadas: {
+              $sum: "$Torres_Inspeccionadas",
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            Codigo_Completo: 1,
+            Torres_Cantidad: 1,
+            Torres_Inspeccionadas: 1,
+          },
+        },
+        {
+          $sort: {
+            Codigo_Completo: 1,
+          },
+        },
       ]);
       const Lineas_Anual = await lineasBaseModel.aggregate([
         {
-          '$match': {
-            'Zona': Grupo_planif
-          }
-        }, {
-          '$lookup': {
-            'from': 'lineas_novedades',
-            'localField': 'Clave_Interna',
-            'foreignField': 'Codigo_Interno',
-            'as': 'Historial'
-          }
-        }, {
-          '$project': {
-            '_id': 0,
-            'Codigo_Tension': 1,
-            'Codigo': 1,
-            'Clave_Interna': 1,
-            'Zona': 1,
-            'Torres_Cantidad': 1,
-            'Historial': {
-              '$filter': {
-                'input': '$Historial',
-                'as': 'hola',
-                'cond': {
-                  '$eq': [
-                    '$$hola.Fecha_Año', Year
-                  ]
-                }
-              }
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$Historial',
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$project': {
-            'Codigo_Completo': {
-              '$concat': [
-                '$Codigo_Tension', '$Clave_Interna'
-              ]
+          $match: {
+            Zona: Grupo_planif,
+          },
+        },
+        {
+          $lookup: {
+            from: "lineas_novedades",
+            localField: "Clave_Interna",
+            foreignField: "Codigo_Interno",
+            as: "Historial",
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            Codigo_Tension: 1,
+            Codigo: 1,
+            Clave_Interna: 1,
+            Zona: 1,
+            Torres_Cantidad: 1,
+            Historial: {
+              $filter: {
+                input: "$Historial",
+                as: "hola",
+                cond: {
+                  $eq: ["$$hola.Fecha_Año", Year],
+                },
+              },
             },
-            'Zona': 1,
-            'Torres_Cantidad': 1,
-            'Codigo_valorac': '$Historial.Codigo_valorac',
-            'Inspeccionada': {
-              '$cond': [
+          },
+        },
+        {
+          $unwind: {
+            path: "$Historial",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            Codigo_Completo: {
+              $concat: ["$Codigo_Tension", "$Clave_Interna"],
+            },
+            Zona: 1,
+            Torres_Cantidad: 1,
+            Codigo_valorac: "$Historial.Codigo_valorac",
+            Inspeccionada: {
+              $cond: [
                 {
-                  '$eq': [
-                    '$Historial.Codigo_valorac', Tipo
-                  ]
-                }, 1, 0
-              ]
-            }
-          }
-        }, {
-          '$group': {
-            '_id': '$Codigo_Completo',
-            'Codigo_Completo': {
-              '$first': '$Codigo_Completo'
+                  $eq: ["$Historial.Codigo_valorac", Tipo],
+                },
+                1,
+                0,
+              ],
             },
-            'Torres_Cantidad': {
-              '$first': '$Torres_Cantidad'
+          },
+        },
+        {
+          $group: {
+            _id: "$Codigo_Completo",
+            Codigo_Completo: {
+              $first: "$Codigo_Completo",
             },
-            'Torres_Inspeccionadas': {
-              '$sum': '$Inspeccionada'
-            }
-          }
-        }, {
-          '$group': {
-            '_id': {},
-            'Torres_Cantidad': {
-              '$sum': '$Torres_Cantidad'
+            Torres_Cantidad: {
+              $first: "$Torres_Cantidad",
             },
-            'Torres_Inspeccionadas': {
-              '$sum': '$Torres_Inspeccionadas'
-            }
-          }
-        }, {
-          '$project': {
-            '_id': 0,
-            'Codigo_Completo': 1,
-            'Torres_Cantidad': 1,
-            'Torres_Inspeccionadas': 1
-          }
-        }, {
-          '$sort': {
-            'Codigo_Completo': 1
-          }
-        }
+            Torres_Inspeccionadas: {
+              $sum: "$Inspeccionada",
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {},
+            Torres_Cantidad: {
+              $sum: "$Torres_Cantidad",
+            },
+            Torres_Inspeccionadas: {
+              $sum: "$Torres_Inspeccionadas",
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            Codigo_Completo: 1,
+            Torres_Cantidad: 1,
+            Torres_Inspeccionadas: 1,
+          },
+        },
+        {
+          $sort: {
+            Codigo_Completo: 1,
+          },
+        },
       ]);
 
-      let Total_Anual_Previsto
-      let Total_Mensual_Previsto
+      let Total_Anual_Previsto;
+      let Total_Mensual_Previsto;
       if (Tipo === "PINM") {
-        Total_Anual_Previsto = Lineas_Anual[0].Torres_Cantidad * 0.5
-        Total_Mensual_Previsto = Lineas_Anual[0].Torres_Cantidad * 0.5 / 12
+        Total_Anual_Previsto = Lineas_Anual[0].Torres_Cantidad * 0.5;
+        Total_Mensual_Previsto = (Lineas_Anual[0].Torres_Cantidad * 0.5) / 12;
       } else if (Tipo === "PINT") {
-        Total_Anual_Previsto = Lineas_Anual[0].Torres_Cantidad * 2
-        Total_Mensual_Previsto = Lineas_Anual[0].Torres_Cantidad * 2 / 12
+        Total_Anual_Previsto = Lineas_Anual[0].Torres_Cantidad * 2;
+        Total_Mensual_Previsto = (Lineas_Anual[0].Torres_Cantidad * 2) / 12;
       }
 
       //RESPUESTA
       res.json({
-        "Total_Anual_Previsto": Total_Anual_Previsto,
-        "Total_Anual_Ejecutado": Lineas_Anual[0].Torres_Inspeccionadas,
-        "Total_Mensual_Previsto": Total_Mensual_Previsto,
-        "Total_Mensual_Ejecutado": Lineas_Mensual[0].Torres_Inspeccionadas,
+        Total_Anual_Previsto: Total_Anual_Previsto,
+        Total_Anual_Ejecutado: Lineas_Anual[0].Torres_Inspeccionadas,
+        Total_Mensual_Previsto: Total_Mensual_Previsto,
+        Total_Mensual_Ejecutado: Lineas_Mensual[0].Torres_Inspeccionadas,
       });
     } catch (e) {
       console.log(e);
@@ -323,90 +328,98 @@ module.exports = {
       //Set documents by Status_usuario
       const Lineas = await lineasBaseModel.aggregate([
         {
-          '$match': {
-            'Zona': Grupo_planif
-          }
-        }, {
-          '$lookup': {
-            'from': 'lineas_novedades',
-            'localField': 'Clave_Interna',
-            'foreignField': 'Codigo_Interno',
-            'as': 'Historial'
-          }
-        }, {
-          '$project': {
-            '_id': 0,
-            'Codigo_Tension': 1,
-            'Codigo': 1,
-            'Clave_Interna': 1,
-            'Zona': 1,
-            'Torres_Cantidad': 1,
-            'Historial': {
-              '$filter': {
-                'input': '$Historial',
-                'as': 'hola',
-                'cond': {
-                  '$eq': [
-                    '$$hola.Fecha_Año', Year
-                  ]
-                }
-              }
-            }
-          }
-        }, {
-          '$unwind': {
-            'path': '$Historial',
-            'preserveNullAndEmptyArrays': true
-          }
-        }, {
-          '$project': {
-            'Codigo_Completo': {
-              '$concat': [
-                '$Codigo_Tension', '$Clave_Interna'
-              ]
+          $match: {
+            Zona: Grupo_planif,
+          },
+        },
+        {
+          $match: {
+            Show: "true",
+          },
+        },
+        {
+          $lookup: {
+            from: "lineas_novedades",
+            localField: "Clave_Interna",
+            foreignField: "Codigo_Interno",
+            as: "Historial",
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            Codigo_Tension: 1,
+            Codigo: 1,
+            Clave_Interna: 1,
+            Zona: 1,
+            Torres_Cantidad: 1,
+            Historial: {
+              $filter: {
+                input: "$Historial",
+                as: "hola",
+                cond: {
+                  $eq: ["$$hola.Fecha_Año", Year],
+                },
+              },
             },
-            'Zona': 1,
-            'Torres_Cantidad': 1,
-            'Codigo_valorac': '$Historial.Codigo_valorac',
-            'Inspeccionada': {
-              '$cond': [
+          },
+        },
+        {
+          $unwind: {
+            path: "$Historial",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            Codigo_Completo: {
+              $concat: ["$Codigo_Tension", "$Clave_Interna"],
+            },
+            Zona: 1,
+            Torres_Cantidad: 1,
+            Codigo_valorac: "$Historial.Codigo_valorac",
+            Inspeccionada: {
+              $cond: [
                 {
-                  '$eq': [
-                    '$Historial.Codigo_valorac', Tipo
-                  ]
-                }, 1, 0
-              ]
-            }
-          }
-        }, {
-          '$group': {
-            '_id': '$Codigo_Completo',
-            'Codigo_Completo': {
-              '$first': '$Codigo_Completo'
+                  $eq: ["$Historial.Codigo_valorac", Tipo],
+                },
+                1,
+                0,
+              ],
             },
-            'Torres_Cantidad': {
-              '$first': '$Torres_Cantidad'
+          },
+        },
+        {
+          $group: {
+            _id: "$Codigo_Completo",
+            Codigo_Completo: {
+              $first: "$Codigo_Completo",
             },
-            'Torres_Inspeccionadas': {
-              '$sum': '$Inspeccionada'
-            }
-          }
-        }, {
-          '$project': {
-            '_id': 0,
-            'Codigo_Completo': 1,
-            'Torres_Cantidad': 1,
-            'Torres_Inspeccionadas': 1
-          }
-        }, {
-          '$sort': {
-            'Codigo_Completo': 1
-          }
-        }
+            Torres_Cantidad: {
+              $first: "$Torres_Cantidad",
+            },
+            Torres_Inspeccionadas: {
+              $sum: "$Inspeccionada",
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            Codigo_Completo: 1,
+            Torres_Cantidad: 1,
+            Torres_Inspeccionadas: 1,
+          },
+        },
+        {
+          $sort: {
+            Codigo_Completo: 1,
+          },
+        },
       ]);
       //RESPUESTA
       res.json({
-        Lineas
+        Lineas,
       });
     } catch (e) {
       console.log(e);

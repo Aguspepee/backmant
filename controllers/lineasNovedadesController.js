@@ -4,7 +4,16 @@ const mongoose = require("../bin/server");
 module.exports = {
   getAll: async function (req, res, next) {
     try {
-      const documents = await lineasNovedadesModel.find();
+      const documents = await lineasNovedadesModel.aggregate([
+        {
+            '$group': {
+                '_id': '$Codigo_Interno', 
+                'fieldN': {
+                    '$sum': 1
+                }
+            }
+        }
+    ]);
       res.json(documents);
       res.send(documents);
       console.log("Documentos", documents);
