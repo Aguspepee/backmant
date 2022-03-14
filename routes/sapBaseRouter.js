@@ -17,6 +17,8 @@ router.get('/filterGeneral/:Month-:Year-:Cl_actividad_PM-:Clase_de_orden-:Grupo_
 //Obrener distribución de horas 
 router.get('/DistibucionHoraria/:Month-:Year-:Grupo_planif',sapBaseController.distribucionHoraria)
 
+//Resumen anual por mes
+router.get('/resumenAnual/:Year-:Cl_actividad_PM-:Clase_de_orden-:Grupo_planif-:Texto_breve-:Pto_tbjo_resp-:Operacion-:BorrarDuplicados',sapBaseController.resumenAnual)
 
 
 module.exports = router;

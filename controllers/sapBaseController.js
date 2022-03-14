@@ -10,7 +10,7 @@ module.exports = {
       console.log("Documentos", documents);
     } catch (e) {
       console.log(e);
-      e.status = 400; 
+      e.status = 400;
       next(e);
     }
   },
@@ -201,11 +201,15 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: ["$Inicio_program_Mes"],
-        Inicio_program_Mes: { $first: "$Inicio_program_Mes" }, 
-        Count: { $sum: 1 } } },
-        { $project : { _id : 0,  Inicio_program_Mes : 1 ,Count: 1 } },
-        {$sort:{Inicio_program_Mes : 1 }}
+        {
+          $group: {
+            _id: ["$Inicio_program_Mes"],
+            Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
+            Count: { $sum: 1 }
+          }
+        },
+        { $project: { _id: 0, Inicio_program_Mes: 1, Count: 1 } },
+        { $sort: { Inicio_program_Mes: 1 } }
 
       ]);
 
@@ -228,7 +232,6 @@ module.exports = {
       next(e);
     }
   },
-
 
   distribucionHoraria: async function (req, res, next) {
     try {
@@ -256,7 +259,7 @@ module.exports = {
       let FiltroFiltrosGenerales = {
         $match: {
           $and: [
-           { Grupo_planif: { $eq: Grupo_planif } }
+            { Grupo_planif: { $eq: Grupo_planif } }
           ],
         },
       };
@@ -268,7 +271,7 @@ module.exports = {
         //Stage 1 - Filters
         FiltroFiltrosGenerales,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Grupo_Agrupamiento",Grupo_Agrupamiento: { $first: "$Grupo_Agrupamiento" } ,Count: { $sum:"$Trabajo_real"} }  },
+        { $group: { _id: "$Grupo_Agrupamiento", Grupo_Agrupamiento: { $first: "$Grupo_Agrupamiento" }, Count: { $sum: "$Trabajo_real" } } },
         { $project: { _id: 0, Grupo_Agrupamiento: 1, Count: 1 } }
 
       ]);
@@ -281,5 +284,134 @@ module.exports = {
       e.status = 400;
       next(e);
     }
+  },
+
+  resumenAnual: async function (req, res, next) {
+    try {
+      //Se definen los parámetros para los filtros
+      let Month = req.params.Month;
+      let Year = req.params.Year;
+      let Cl_actividad_PM = req.params.Cl_actividad_PM;
+      let Clase_de_orden = req.params.Clase_de_orden;
+      if (Clase_de_orden === "false") {
+        Clase_de_orden = "";
+      }
+      let Grupo_planif = req.params.Grupo_planif;
+      let Texto_breve = req.params.Texto_breve;
+      if (Texto_breve === "false") {
+        Texto_breve = "";
+      }
+      let Pto_tbjo_resp = req.params.Pto_tbjo_resp;
+      if (Pto_tbjo_resp === "false") {
+        Pto_tbjo_resp = "";
+      }
+      let Operacion = req.params.Operacion;
+      let BorrarDuplicados = req.params.BorrarDuplicados;
+
+      //-------FILTROS--------//
+
+      //FILTRO CTEC Cerrado Tecnicamente
+      let FiltroCTEC = {
+        $match: { Status_usuario: { $eq: "CTEC" } }
+      };
+
+      //FILTRO Anual Fecha Referencia
+      let FiltroAnualFechaReferencia = {
+        $match: {
+          Fecha_ref_Año: { $eq: Year },
+        },
+      };
+
+      //FILTRO Borrar Duplicados
+      //Si hay ubicaciones técnicas con diferentes Status, no las borra.
+      let FiltroBorrarDuplicados;
+      if (BorrarDuplicados === "true") {
+        FiltroBorrarDuplicados = {
+          $group: {
+            _id: ["$Ubicac_técnica", "$Status_usuario"],
+            Status_usuario: { $first: "$Status_usuario" },
+            Fecha_ref_Año: { $first: "$Fecha_ref_Año" },
+            Fecha_ref_Mes: { $first: "$Fecha_ref_Mes" },
+            Inicio_program_Año: { $first: "$Inicio_program_Año" },
+            Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
+          },
+        };
+      } else {
+        FiltroBorrarDuplicados = { $match: {} };
+      }
+
+      //FILTRO Filtros generales
+      let FiltroFiltrosGenerales = {
+        $match: {
+          $and: [
+            { Grupo_planif: { $eq: Grupo_planif } },
+            { Clase_de_orden: { $regex: Clase_de_orden, $options: "i" } },
+            { Pto_tbjo_resp: { $regex: Pto_tbjo_resp, $options: "i" } },
+            { Cl_actividad_PM: { $eq: Cl_actividad_PM } },
+            { Texto_breve: { $regex: Texto_breve, $options: "i" } },
+            { Operacion: { $eq: Operacion } },
+          ],
+        },
+      };
+
+      const Fecha_Referencia_Acumulado_Total = await sapsBaseModel.aggregate([
+        //Stage 0 - Filter by Date
+        FiltroAnualFechaReferencia,
+        //Stage 1 - Filters
+        FiltroFiltrosGenerales,
+        //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
+        FiltroBorrarDuplicados,
+        //Stage 3 - Make Groups of Status
+        {
+          $group: {
+            _id: ["$Inicio_program_Mes"],
+            Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
+            Count: { $sum: 1 }
+          }
+        },
+        { $project: { _id: 0, Inicio_program_Mes: 1, Count: 1 } },
+        { $sort: { Inicio_program_Mes: 1 } }
+
+      ]);
+
+      const Fecha_Referencia_Acumulado_Ejecutado = await sapsBaseModel.aggregate([
+        //Stage 0 - Filter by Date
+        FiltroAnualFechaReferencia,
+        //Stage 1 - Filters
+        FiltroFiltrosGenerales,
+        //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
+        FiltroBorrarDuplicados,
+        //Stage 3 - Filtrar por ejecutados
+        FiltroCTEC,
+        //Stage 4 - Make Groups of Status
+        {
+          $group: {
+            _id: ["$Inicio_program_Mes"],
+            Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
+            Count: { $sum: 1 }
+          }
+        },
+        { $project: { _id: 0, Inicio_program_Mes: 1, Count: 1 } },
+        { $sort: { Inicio_program_Mes: 1 } }
+
+      ]);
+
+      //RESPUESTA
+      res.json({
+        Grupo_planif: Grupo_planif,
+        Clase_de_orden: Clase_de_orden,
+        Cl_actividad_PM: Cl_actividad_PM,
+        Pto_tbjo_resp: Pto_tbjo_resp,
+        Texto_breve: Texto_breve,
+        Fecha_Referencia_Acumulado_Total: Fecha_Referencia_Acumulado_Total,
+        Fecha_Referencia_Acumulado_Ejecutado:Fecha_Referencia_Acumulado_Ejecutado,
+      });
+    } catch (e) {
+      console.log(e);
+      e.status = 400;
+      next(e);
+    }
+
+
   },
 };
