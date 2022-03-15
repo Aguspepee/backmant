@@ -193,9 +193,9 @@ module.exports = {
         { $project: { _id: 0, Status: 1, Count: 1 } }
       ]);
 
-      const Fecha_Referencia_Acumulado = await sapsBaseModel.aggregate([
+      const Inicio_Programado_Acumulado = await sapsBaseModel.aggregate([
         //Stage 0 - Filter by Date
-        FiltroAnualFechaReferencia,
+        FiltroAnualInicioProgramado,
         //Stage 1 - Filters
         FiltroFiltrosGenerales,
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
@@ -224,7 +224,7 @@ module.exports = {
         Inicio_Programado_Anual: Inicio_Programado_Anual,
         Fecha_Referencia_Mensual: Fecha_Referencia_Mensual,
         Fecha_Referencia_Anual: Fecha_Referencia_Anual,
-        Fecha_Referencia_Acumulado: Fecha_Referencia_Acumulado,
+        Inicio_Programado_Acumulado: Inicio_Programado_Acumulado,
       });
     } catch (e) {
       console.log(e);
