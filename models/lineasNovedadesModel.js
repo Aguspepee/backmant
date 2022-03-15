@@ -59,7 +59,6 @@ const lineasNovedadesShema = mongoose.Schema({
   Codigo_Interno: {
     type: String,
     default: function () {
-
       return this.Equipo.split("-",2)[1];
     },
   },
@@ -73,6 +72,12 @@ const lineasNovedadesShema = mongoose.Schema({
     type: String,
     default: function () {
       return this.Fecha.slice(6, 10);
+    },
+  },
+  Piquete: {
+    type: String,
+    default: function () {
+      return this.Equipo.split("-")[3];
     },
   },
 });
