@@ -7,14 +7,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
 
-var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var sapBaseRouter = require('./routes/sapBaseRouter'); //SAP
 var lineasBaseRouter = require('./routes/lineasBaseRouter'); //LineasBase
 var lineasNovedadesRouter = require('./routes/lineasNovedadesRouter'); //LineasBase
 
 var app = express();
-
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
@@ -23,9 +21,8 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 5
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-
-app.use(cors({ origin: "https://aguspepee.github.io" }));
-//app.use(cors());
+//app.use(cors({ origin: "https://aguspepee.github.io" }));
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -42,8 +39,6 @@ app.use('/lineasNovedades', lineasNovedadesRouter)
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
-
 
 // error handler
 app.use(function (err, req, res, next) {

@@ -77,7 +77,7 @@ const lineasNovedadesShema = mongoose.Schema({
   Piquete: {
     type: String,
     default: function () {
-      return this.Equipo.split("-")[3];
+      return Number(this.Equipo.split("-")[3].slice(1,5));
     },
   },
 });
