@@ -29,7 +29,7 @@ module.exports = {
         Cl_actividad_PM: req.body.Cl_actividad_PM,
         Status_usuario: req.body.Status_usuario,
         Pto_tbjo_resp: req.body.Pto_tbjo_resp,
-        Trabajo_real: req.body.Trabajo_real,
+        Trabajo_real: Number(req.body.Trabajo_real),
         Operacion: req.body.Operacion,
       });
 

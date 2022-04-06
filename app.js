@@ -21,8 +21,8 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 5
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-//app.use(cors({ origin: "https://aguspepee.github.io" }));
-app.use(cors());
+app.use(cors({ origin: "https://aguspepee.github.io/" }));
+//app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
