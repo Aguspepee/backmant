@@ -59,7 +59,8 @@ const lineasNovedadesShema = mongoose.Schema({
   Codigo_Interno: {
     type: String,
     default: function () {
-      return this.Equipo.split("-",2)[1];
+      let codigo_interno = this.Equipo? this.Equipo.split("-",2)[1] : null
+      return codigo_interno;
     },
   },
   Fecha_Mes: {

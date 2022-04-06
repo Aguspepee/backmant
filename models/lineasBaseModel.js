@@ -116,11 +116,11 @@ const lineasBaseShema = mongoose.Schema({
     default: null,
   },
   BDE:   {
-    type: Number,
+    type: String,
     default: null,
   },
   IDQ:   {
-    type: Number,
+    type: String,
     default: null,
   },
   Observaciones:   {

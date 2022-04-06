@@ -5,10 +5,15 @@ const lineasNovedadesController = require("../controllers/lineasNovedadesControl
 //----RUTAS GENERALES----//
 //Obtener TODOS los documentos de la base de datos de Lineas (lineasNovedades)
 router.get('/',lineasNovedadesController.getAll)
-//Elimina TODOS los documentos a la base de datos de Lineas (lineasNovedades)
-router.delete('/',lineasNovedadesController.deleteAll)
+//Obtener TODOS los documentos de la base de datos de Lineas (lineasNovedades)
+router.get('/resume',lineasNovedadesController.resumeAll)
 //Carga TODOS los documentos a la base de datos de Lineas (lineasNovedades)
 router.post('/',lineasNovedadesController.createAll)
+//Actualiza uno por uno los irems de la base de datos de Lineas (lineasNovedades)
+router.put('/',lineasNovedadesController.updateOneByOne)
+//Elimina TODOS los documentos a la base de datos de Lineas (lineasNovedades)
+router.delete('/',lineasNovedadesController.deleteAll)
+
 
 
 
