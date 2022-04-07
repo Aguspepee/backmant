@@ -11,6 +11,7 @@ var usersRouter = require('./routes/users');
 var sapBaseRouter = require('./routes/sapBaseRouter'); //SAP
 var lineasBaseRouter = require('./routes/lineasBaseRouter'); //LineasBase
 var lineasNovedadesRouter = require('./routes/lineasNovedadesRouter'); //LineasBase
+var horasRouter = require('./routes/horasRouter'); //LineasBase
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use('/users', usersRouter);
 app.use('/sapBase', sapBaseRouter)
 app.use('/lineasBase', lineasBaseRouter)
 app.use('/lineasNovedades', lineasNovedadesRouter)
+app.use('/horas', horasRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
