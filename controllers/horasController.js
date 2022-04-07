@@ -19,9 +19,9 @@ module.exports = {
       let Zona = req.params.Zona
     try {
       const documents = await horasModel.find(Zona={Zona});
-      res.json(documents);
+     // res.json(documents);
       res.send(documents);
-      console.log("Documentos", documents);
+      //console.log("Documentos", documents);
     } catch (e) {
       console.log(e);
       e.status = 400;
