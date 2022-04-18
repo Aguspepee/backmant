@@ -17,7 +17,7 @@ const sapsBaseShema = mongoose.Schema({
     type: String,
     required: [true, errorMessage.GENERAL.campo_obligatorio],
   },
-  Texto_breve: {
+  Texto_breve: { 
     type: String,
     required: [true, errorMessage.GENERAL.campo_obligatorio],
   },
