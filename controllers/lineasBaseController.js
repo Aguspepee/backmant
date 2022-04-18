@@ -87,8 +87,8 @@ module.exports = {
   },
 
   NovedadesResumen: async function (req, res, next) {
-    let Month = req.params.Month;
-    let Year = req.params.Year;
+    let Month = Number(req.params.Month);
+    let Year = Number(req.params.Year.slice(2,4));
     let Grupo_planif = req.params.Grupo_planif;
     let Tipo = req.params.Tipo;
     try {
@@ -320,8 +320,8 @@ module.exports = {
   },
 
   NovedadesDetalle: async function (req, res, next) {
-    let Month = req.params.Month;
-    let Year = req.params.Year;
+    let Month = Number(req.params.Month);
+    let Year = Number(req.params.Year.slice(2,4));
     let Grupo_planif = req.params.Grupo_planif;
     let Tipo = req.params.Tipo;
     try {

@@ -29,7 +29,7 @@ module.exports = {
         Cl_actividad_PM: req.body.Cl_actividad_PM,
         Status_usuario: req.body.Status_usuario,
         Pto_tbjo_resp: req.body.Pto_tbjo_resp,
-        Trabajo_real: Number(req.body.Trabajo_real),
+        Trabajo_real: req.body.Trabajo_real,
         Operacion: req.body.Operacion,
       });
 
@@ -57,8 +57,8 @@ module.exports = {
   filterGeneral: async function (req, res, next) {
     try {
       //Se definen los parámetros para los filtros
-      let Month = req.params.Month;
-      let Year = req.params.Year;
+      let Month = Number(req.params.Month);
+      let Year = Number(req.params.Year.slice(2,4));
       let Cl_actividad_PM = req.params.Cl_actividad_PM;
       let Clase_de_orden = req.params.Clase_de_orden;
       if (Clase_de_orden === "false") {
@@ -152,9 +152,14 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", Status: { $first: "$Status_usuario" }, Count: { $sum: 1 } } },
-        { $project: { _id: 0, Status: 1, Count: 1 } }
-
+        {
+          $group: {
+            _id: "$Status_usuario",
+            Status: { $first: "$Status_usuario" },
+            Count: { $sum: 1 },
+          },
+        },
+        { $project: { _id: 0, Status: 1, Count: 1 } },
       ]);
 
       const Inicio_Programado_Anual = await sapsBaseModel.aggregate([
@@ -165,8 +170,14 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", Status: { $first: "$Status_usuario" }, Count: { $sum: 1 } } },
-        { $project: { _id: 0, Status: 1, Count: 1 } }
+        {
+          $group: {
+            _id: "$Status_usuario",
+            Status: { $first: "$Status_usuario" },
+            Count: { $sum: 1 },
+          },
+        },
+        { $project: { _id: 0, Status: 1, Count: 1 } },
       ]);
 
       const Fecha_Referencia_Mensual = await sapsBaseModel.aggregate([
@@ -177,8 +188,14 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", Status: { $first: "$Status_usuario" }, Count: { $sum: 1 } } },
-        { $project: { _id: 0, Status: 1, Count: 1 } }
+        {
+          $group: {
+            _id: "$Status_usuario",
+            Status: { $first: "$Status_usuario" },
+            Count: { $sum: 1 },
+          },
+        },
+        { $project: { _id: 0, Status: 1, Count: 1 } },
       ]);
 
       const Fecha_Referencia_Anual = await sapsBaseModel.aggregate([
@@ -189,8 +206,14 @@ module.exports = {
         //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
         FiltroBorrarDuplicados,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Status_usuario", Status: { $first: "$Status_usuario" }, Count: { $sum: 1 } } },
-        { $project: { _id: 0, Status: 1, Count: 1 } }
+        {
+          $group: {
+            _id: "$Status_usuario",
+            Status: { $first: "$Status_usuario" },
+            Count: { $sum: 1 },
+          },
+        },
+        { $project: { _id: 0, Status: 1, Count: 1 } },
       ]);
 
       const Inicio_Programado_Acumulado = await sapsBaseModel.aggregate([
@@ -205,12 +228,11 @@ module.exports = {
           $group: {
             _id: ["$Inicio_program_Mes"],
             Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
-            Count: { $sum: 1 }
-          }
+            Count: { $sum: 1 },
+          },
         },
         { $project: { _id: 0, Inicio_program_Mes: 1, Count: 1 } },
-        { $sort: { Inicio_program_Mes: 1 } }
-
+        { $sort: { Inicio_program_Mes: 1 } },
       ]);
 
       //RESPUESTA
@@ -236,8 +258,8 @@ module.exports = {
   distribucionHoraria: async function (req, res, next) {
     try {
       //Se definen los parámetros para los filtros
-      let Month = req.params.Month;
-      let Year = req.params.Year;
+      let Month = Number(req.params.Month);
+      let Year = Number(req.params.Year.slice(2,4));
       let Grupo_planif = req.params.Grupo_planif;
       let Pto_tbjo_resp = req.params.Pto_tbjo_resp;
       if (Pto_tbjo_resp === "false") {
@@ -258,9 +280,7 @@ module.exports = {
       //FILTRO Filtros generales
       let FiltroFiltrosGenerales = {
         $match: {
-          $and: [
-            { Grupo_planif: { $eq: Grupo_planif } }
-          ],
+          $and: [{ Grupo_planif: { $eq: Grupo_planif } }],
         },
       };
 
@@ -271,13 +291,18 @@ module.exports = {
         //Stage 1 - Filters
         FiltroFiltrosGenerales,
         //Stage 3 - Make Groups of Status
-        { $group: { _id: "$Grupo_Agrupamiento", Grupo_Agrupamiento: { $first: "$Grupo_Agrupamiento" }, Count: { $sum: "$Trabajo_real" } } },
-        { $project: { _id: 0, Grupo_Agrupamiento: 1, Count: 1 } }
-
+        {
+          $group: {
+            _id: "$Grupo_Agrupamiento",
+            Grupo_Agrupamiento: { $first: "$Grupo_Agrupamiento" },
+            Count: { $sum: "$Trabajo_real" },
+          },
+        },
+        { $project: { _id: 0, Grupo_Agrupamiento: 1, Count: 1 } },
       ]);
       //RESPUESTA
       res.json({
-        Distribucion
+        Distribucion,
       });
     } catch (e) {
       console.log(e);
@@ -289,8 +314,8 @@ module.exports = {
   resumenAnual: async function (req, res, next) {
     try {
       //Se definen los parámetros para los filtros
-      let Month = req.params.Month;
-      let Year = req.params.Year;
+      let Month = Number(req.params.Month);
+      let Year = Number(req.params.Year.slice(2,4));
       let Cl_actividad_PM = req.params.Cl_actividad_PM;
       let Clase_de_orden = req.params.Clase_de_orden;
       if (Clase_de_orden === "false") {
@@ -312,7 +337,7 @@ module.exports = {
 
       //FILTRO CTEC Cerrado Tecnicamente
       let FiltroCTEC = {
-        $match: { Status_usuario: { $eq: "CTEC" } }
+        $match: { Status_usuario: { $eq: "CTEC" } },
       };
 
       //FILTRO Anual Fecha Referencia
@@ -366,35 +391,34 @@ module.exports = {
           $group: {
             _id: ["$Inicio_program_Mes"],
             Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
-            Count: { $sum: 1 }
-          }
+            Count: { $sum: 1 },
+          },
         },
         { $project: { _id: 0, Inicio_program_Mes: 1, Count: 1 } },
-        { $sort: { Inicio_program_Mes: 1 } }
-
+        { $sort: { Inicio_program_Mes: 1 } },
       ]);
 
-      const Fecha_Referencia_Acumulado_Ejecutado = await sapsBaseModel.aggregate([
-        //Stage 0 - Filter by Date
-        FiltroAnualFechaReferencia,
-        //Stage 1 - Filters
-        FiltroFiltrosGenerales,
-        //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
-        FiltroBorrarDuplicados,
-        //Stage 3 - Filtrar por ejecutados
-        FiltroCTEC,
-        //Stage 4 - Make Groups of Status
-        {
-          $group: {
-            _id: ["$Inicio_program_Mes"],
-            Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
-            Count: { $sum: 1 }
-          }
-        },
-        { $project: { _id: 0, Inicio_program_Mes: 1, Count: 1 } },
-        { $sort: { Inicio_program_Mes: 1 } }
-
-      ]);
+      const Fecha_Referencia_Acumulado_Ejecutado =
+        await sapsBaseModel.aggregate([
+          //Stage 0 - Filter by Date
+          FiltroAnualFechaReferencia,
+          //Stage 1 - Filters
+          FiltroFiltrosGenerales,
+          //Stage 2 - Delete duplicates, based on "Ubicac_técnica".
+          FiltroBorrarDuplicados,
+          //Stage 3 - Filtrar por ejecutados
+          FiltroCTEC,
+          //Stage 4 - Make Groups of Status
+          {
+            $group: {
+              _id: ["$Inicio_program_Mes"],
+              Inicio_program_Mes: { $first: "$Inicio_program_Mes" },
+              Count: { $sum: 1 },
+            },
+          },
+          { $project: { _id: 0, Inicio_program_Mes: 1, Count: 1 } },
+          { $sort: { Inicio_program_Mes: 1 } },
+        ]);
 
       //RESPUESTA
       res.json({
@@ -404,14 +428,13 @@ module.exports = {
         Pto_tbjo_resp: Pto_tbjo_resp,
         Texto_breve: Texto_breve,
         Fecha_Referencia_Acumulado_Total: Fecha_Referencia_Acumulado_Total,
-        Fecha_Referencia_Acumulado_Ejecutado:Fecha_Referencia_Acumulado_Ejecutado,
+        Fecha_Referencia_Acumulado_Ejecutado:
+          Fecha_Referencia_Acumulado_Ejecutado,
       });
     } catch (e) {
       console.log(e);
       e.status = 400;
       next(e);
     }
-
-
   },
 };

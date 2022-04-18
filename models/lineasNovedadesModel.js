@@ -64,15 +64,15 @@ const lineasNovedadesShema = mongoose.Schema({
     },
   },
   Fecha_Mes: {
-    type: String,
+    type: Number,
     default: function () {
-      return this.Fecha.slice(3, 5);
+      return Number(this.Fecha.split("/")[0]);
     },
   },
   Fecha_Año: {
-    type: String,
+    type: Number,
     default: function () {
-      return this.Fecha.slice(6, 10);
+      return Number(this.Fecha.split("/")[2]);
     },
   },
   Piquete: {

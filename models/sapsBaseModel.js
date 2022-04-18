@@ -51,6 +51,7 @@ const sapsBaseShema = mongoose.Schema({
   },
   Trabajo_real: {
     type: Number,
+    cast: v => { return v ? Number(v.replace(/,/g, '')) : v },
     default: 0,
   },
   Operacion: {
@@ -58,27 +59,27 @@ const sapsBaseShema = mongoose.Schema({
     required: [true, errorMessage.GENERAL.campo_obligatorio],
   },
   Fecha_ref_Mes: {
-    type: String,
+    type: Number,
     default: function () {
-      return this.Fecha_ref.slice(3, 5);
+      return Number(this.Fecha_ref.split("/", 3)[0]);
     },
   },
   Fecha_ref_Año: {
-    type: String,
+    type: Number,
     default: function () {
-      return this.Fecha_ref.slice(6, 10);
+      return Number(this.Fecha_ref.split("/", 3)[2]);
     },
   },
   Inicio_program_Mes: {
-    type: String,
+    type: Number,
     default: function () {
-      return this.Fecha_ref.slice(3, 5);
+      return Number(this.Fecha_ref.split("/", 3)[0]);
     },
   },
   Inicio_program_Año: {
-    type: String,
+    type: Number,
     default: function () {
-      return this.Fecha_ref.slice(6, 10);
+      return Number(this.Fecha_ref.split("/", 3)[2]);
     },
   },
 
