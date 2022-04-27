@@ -73,13 +73,13 @@ const sapsBaseShema = mongoose.Schema({
   Inicio_program_Mes: {
     type: Number,
     default: function () {
-      return Number(this.Fecha_ref.split("/", 3)[0]);
+      return Number(this.Inicio_program.split("/", 3)[0]);
     },
   },
   Inicio_program_Año: {
     type: Number,
     default: function () {
-      return Number(this.Fecha_ref.split("/", 3)[2]);
+      return Number(this.Inicio_program.split("/", 3)[2]);
     },
   },
 
