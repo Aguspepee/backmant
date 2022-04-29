@@ -22,8 +22,6 @@ module.exports = {
     try {
       const documents = await horasModel.findOne({Zona:Zona,Mes:Month});
       res.json(documents);
-      //res.send(documents);
-      console.log("Documentos", documents);
     } catch (e) {
       console.log(e);
       e.status = 400;
