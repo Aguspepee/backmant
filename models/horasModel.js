@@ -11,6 +11,14 @@ const horasShema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  Mes:{
+    type: Number,
+    default: 0,
+  },
+  Año:{
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("horas_bases", horasShema);

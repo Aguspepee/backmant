@@ -17,11 +17,13 @@ module.exports = {
 
   getByZone: async function (req, res, next) {
       let Zona = req.params.Zona
+      let Month = req.params.Month
+      let Year = req.params.Year
     try {
-      const documents = await horasModel.find(Zona={Zona});
-     // res.json(documents);
-      res.send(documents);
-      //console.log("Documentos", documents);
+      const documents = await horasModel.findOne({Zona:Zona,Mes:Month});
+      res.json(documents);
+      //res.send(documents);
+      console.log("Documentos", documents);
     } catch (e) {
       console.log(e);
       e.status = 400;
