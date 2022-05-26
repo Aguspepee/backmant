@@ -7,4 +7,4 @@ const horasController = require("../controllers/horasController");
 router.get('/',horasController.getAll)
 router.get('/byZone/:Month-:Year-:Zona',horasController.getByZone)
 
-module.exports = router;
+module.exports = router; 

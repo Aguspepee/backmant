@@ -5,6 +5,7 @@ const sapBaseController = require("../controllers/sapBaseController");
 //----RUTAS GENERALES----//
 //Obtener TODOS los documentos de la base de datos SAP (saps)
 router.get('/',sapBaseController.getAll)
+router.get('/resumen',sapBaseController.getResumen)
 //Elimina TODOS los documentos a la base de datos SAP (saps)
 router.delete('/',sapBaseController.deleteAll)
 //Carga TODOS los documentos a la base de datos SAP (saps)
