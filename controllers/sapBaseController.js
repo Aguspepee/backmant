@@ -1151,7 +1151,7 @@ module.exports = {
       res.json({
         gestion_aceites_generadas: gestion_aceites_generadas,
         gestion_aceites_cerradas: gestion_aceites_cerradas,
-        mantenimiento_estaciones_generada: mantenimiento_estaciones_generadas,
+        mantenimiento_estaciones_generadas: mantenimiento_estaciones_generadas,
         mantenimiento_estaciones_cerradas: mantenimiento_estaciones_cerradas,
         mantenimiento_lineas_generadas: mantenimiento_lineas_generadas,
         mantenimiento_lineas_cerradas: mantenimiento_lineas_cerradas,
