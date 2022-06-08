@@ -39,21 +39,6 @@ module.exports = {
 
   createAll: async function (req, res, next) {
     try {
-      const sap = new lineasNovedadesModel({
-        Orden: req.body.Orden,
-        Ubicac_tecnica: req.body.Ubicac_tecnica,
-        Punto_de_medida: req.body.Punto_de_medida,
-        Documento_med: req.body.Documento_med,
-        Equipo: req.body.Equipo,
-        Denominacion: req.body.Denominacion,
-        Posicion_medida: req.body.Posicion_medida,
-        Fecha: req.body.Fecha,
-        Grupo_codigos: req.body.Grupo_codigos,
-        Codigo_valorac: req.body.Codigo_valorac,
-        Codif_txt_cod: req.body.Codif_txt_cod,
-        Texto: req.body.Texto,
-        Valor_medido: req.body.Valor_medido,
-      });
       const document = await lineasNovedadesModel.create(req.body);
       console.log("se creo", document);
       res.json(document);
@@ -81,7 +66,7 @@ module.exports = {
         Codigo_valorac: req.body.Codigo_valorac,
         Codif_txt_cod: req.body.Codif_txt_cod,
         Texto: req.body.Texto,
-        Valor_medido: req.body.Valor_medido,
+        Valor_medido: req.body.Valor_medido? parseFloat(req.body.Valor_medido.replace(/,/g, '')):0,
       }); 
       const filter = {Equipo: "T-ZNLH-4-P0339"};
       const update = {Documento_med:"cargó"};

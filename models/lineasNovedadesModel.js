@@ -1,12 +1,22 @@
 const mongoose = require("../bin/server");
 const errorMessage = require("../utils/errorMessage");
 
+mongoose.Number.cast(v => {
+  if (typeof(v)==='string'){
+    return (v.includes(",") ? parseFloat(v.replace(/,/g, '')) : Number(v))
+  }else{
+    return (Number(v))
+  }
+  
+});
+
 //Schema
 const lineasNovedadesShema = mongoose.Schema({
   Orden: {
     type: String,
-    required: [true, errorMessage.GENERAL.campo_obligatorio],
-    minlength: [8, errorMessage.GENERAL.min_length],
+    default: "-"
+    //required: [true, errorMessage.GENERAL.campo_obligatorio],
+    //minlength: [8, errorMessage.GENERAL.min_length],
   },
   Ubicac_tecnica: {
     type: String,
@@ -54,12 +64,14 @@ const lineasNovedadesShema = mongoose.Schema({
   },
   Valor_medido: {
     type: Number,
-    default: null,
+    /* default: function (){
+    return(this.Valor_medido? parseFloat(this.Valor_medido?.replace(/,/g, '')):0)
+    } */
   },
   Codigo_Interno: {
     type: String,
     default: function () {
-      let codigo_interno = this.Equipo? this.Equipo.split("-",2)[1] : null
+      let codigo_interno = this.Equipo ? this.Equipo.split("-", 2)[1] : null
       return codigo_interno;
     },
   },
@@ -78,7 +90,8 @@ const lineasNovedadesShema = mongoose.Schema({
   Piquete: {
     type: String,
     default: function () {
-      return Number(this.Equipo.split("-")[3].slice(1,5));
+
+      return (this.Equipo.includes("Piquete") ? Number(this.Equipo.split("-")[3].slice(1, 5)) : undefined);
     },
   },
 });
