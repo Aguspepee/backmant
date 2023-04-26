@@ -442,7 +442,7 @@ module.exports = {
       const gestion_aceites_generadas = await sapsBaseModel.aggregate([
         {
           '$match': {
-            'Inicio_program_Año': 22
+            'Inicio_program_Año': 23
           }
         }, {
           '$match': {
@@ -552,7 +552,7 @@ module.exports = {
       const gestion_aceites_cerradas = await sapsBaseModel.aggregate([
         {
           '$match': {
-            'Fecha_ref_Año': 22
+            'Fecha_ref_Año': 23
           }
         }, {
           '$match': {
@@ -668,7 +668,7 @@ module.exports = {
       const mantenimiento_estaciones_generadas = await sapsBaseModel.aggregate([
         {
           '$match': {
-            'Inicio_program_Año': 22
+            'Inicio_program_Año': 23
           }
         }, {
           '$match': {
@@ -796,7 +796,7 @@ module.exports = {
       const mantenimiento_estaciones_cerradas = await sapsBaseModel.aggregate([
         {
           '$match': {
-            'Fecha_ref_Año': 22
+            'Fecha_ref_Año': 23
           }
         }, {
           '$match': {
@@ -930,7 +930,7 @@ module.exports = {
       const mantenimiento_lineas_generadas = await sapsBaseModel.aggregate([
         {
           '$match': {
-            'Inicio_program_Año': 22
+            'Inicio_program_Año': 23
           }
         }, {
           '$match': {
@@ -1036,7 +1036,7 @@ module.exports = {
       const mantenimiento_lineas_cerradas = await sapsBaseModel.aggregate([
         {
           '$match': {
-            'Fecha_ref_Año': 22
+            'Fecha_ref_Año': 23
           }
         }, {
           '$match': {
